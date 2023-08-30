@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify, abort  # Import abort
+from flask_cors import CORS
 import logging  # Import logging
 import requests
 import textrazor
 import openai
+import sys
+print(sys.executable)
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
