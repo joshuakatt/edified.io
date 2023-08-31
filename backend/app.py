@@ -4,6 +4,7 @@ import logging  # Import logging
 import requests
 import textrazor
 import openai
+from concurrent.futures import ThreadPoolExecutor
 
 
 app = Flask(__name__)
@@ -90,9 +91,16 @@ def expand_note():  # Removed 'text' parameter
 def edify():
     content = request.json
     text_to_edify = content.get("text", "")
-    summary = summarize_text(text_to_edify)
-    references = reference_links(text_to_edify)
-    topics = extract_topics(text_to_edify)  # New line to extract topics
+    
+    # Create a ThreadPoolExecutor to run the functions in parallel
+    with ThreadPoolExecutor() as executor:
+        future_summary = executor.submit(summarize_text, text_to_edify)
+        future_references = executor.submit(reference_links, text_to_edify)
+        future_topics = executor.submit(extract_topics, text_to_edify)
+        
+        summary = future_summary.result()
+        references = future_references.result()
+        topics = future_topics.result()
 
     if summary == "Max retries reached. Could not summarize text.":
         return jsonify({"summary": summary, "references": references, "topics": topics, "error": "APIUnavailable"})

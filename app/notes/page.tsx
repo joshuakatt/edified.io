@@ -39,11 +39,11 @@ export default function Page() {
 
   useEffect(() => {
     setTopics([]);
-
+  
     import('quill').then((QuillModule) => {
       const Quill = QuillModule.default;
       if (document.querySelector('#editor .ql-toolbar')) return;
-
+  
       const options = {
         debug: 'info',
         modules: { /* your modules here */ },
@@ -51,20 +51,26 @@ export default function Page() {
         readOnly: false,
         theme: 'snow'
       };
-
+  
       quillRef.current = new Quill('#editor', options);
+  
+      let debounceTimer: NodeJS.Timeout; // Declare debounceTimer
       
       quillRef.current.on('text-change', function() {
-        const text = quillRef.current.getText();
-        axios.post('http://localhost:8000/api/edify', { text }, {
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then(({ data: { summary, references, topics } }) => {
-          setSummary(summary);
-          setReferences(references);
-          setTopics(topics);
-        })
-        .catch(error => console.error('Error calling the Flask API:', error));
+        clearTimeout(debounceTimer); // Clear existing timer
+  
+        debounceTimer = setTimeout(() => { // Set a new timer
+          const text = quillRef.current.getText();
+          axios.post('http://localhost:8000/api/edify', { text }, {
+            headers: { 'Content-Type': 'application/json' }
+          })
+          .then(({ data: { summary, references, topics } }) => {
+            setSummary(summary);
+            setReferences(references);
+            setTopics(topics);
+          })
+          .catch(error => console.error('Error calling the Flask API:', error));
+        }, 1500); // 1.5 seconds
       });
     });
   }, []);
