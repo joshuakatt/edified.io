@@ -29,13 +29,22 @@ export default function Page() {
   const [references, setReferences] = useState<string[] | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [topics, setTopics] = useState<string[] | null>(null);
+  const [menubarHeight, setMenubarHeight] = useState(0);
+  const [sectionHeights, setSectionHeights] = useState({
+    section1: '80vh',
+    section2: '10vh'
+  });
+  const [editorHeight, setEditorHeight] = useState('70vh');
 
   useEffect(() => {
+    const menubar = document.getElementById('menubar');
+    if (menubar) {
+      setMenubarHeight(menubar.offsetHeight);
+    }
     setTopics([]);
     import('quill').then((QuillModule) => {
       const Quill = QuillModule.default;
       if (document.querySelector('#editor .ql-toolbar')) return;
-
       const options = {
         debug: 'info',
         modules: { /* ... */ },
@@ -43,9 +52,7 @@ export default function Page() {
         readOnly: false,
         theme: 'snow'
       };
-
       const quill = new Quill('#editor', options);
-
       quill.on('text-change', function () {
         const text = quill.getText();
         axios.post('http://localhost:8000/api/edify', { text }, {
@@ -61,14 +68,31 @@ export default function Page() {
     });
   }, []);
 
-  const toggleExpand = () => setIsExpanded(!isExpanded);
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+    if (isExpanded) {
+      setSectionHeights({
+        section1: '80vh',
+        section2: '10vh'
+      });
+      setEditorHeight('70vh');  // Update Quill editor's height
+    } else {
+      setSectionHeights({
+        section1: '50vh',
+        section2: '40vh'
+      });
+      setEditorHeight('40vh');  // Update Quill editor's height
+    }
+  };
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="flex-grow flex items-center justify-between">
+    <div className="h-screen flex flex-col" style={{ paddingTop: menubarHeight }}>
+      {/* Section 1 */}
+      <div className="flex-grow flex items-center justify-between" style={{ height: sectionHeights.section1 }}>
         <div className="flex w-full justify-center">
           <div className="w-[60%]">
-            <div id="editor" className="h-[75vh] bg-gray-50 p-4"></div>
+            {/* Update Quill editor's style */}
+            <div id="editor" className="bg-gray-50 p-4" style={{ height: editorHeight }}></div>
           </div>
         </div>
         <div className="absolute right-0 top-1/4">
@@ -102,12 +126,16 @@ export default function Page() {
           </Card>
         </div>
       </div>
+
+      {/* Button to toggle */}
       <div className="bg-white p-2 flex justify-center items-center" style={{ height: '5%' }}>
-        <button className="bg-gray-300 rounded-full p-2" onClick={toggleExpand}>
-          <span role="img" aria-label="arrow">{isExpanded ? '⬇️' : '⬆️'}</span>
+        <button className="rounded-full p-2" onClick={toggleExpand}>
+          <span role="img" aria-label="arrow">{isExpanded ? '▼' : '▲'}</span>
         </button>
       </div>
-      <div className="bg-gray-200 transition-all duration-300 overflow-y-auto" style={{ height: isExpanded ? '50vh' : '20vh' }}>
+
+      {/* Section 2 */}
+      <div className="bg-gray-200 transition-all duration-300 overflow-y-auto" style={{ height: sectionHeights.section2 }}>
         {topics && (
           <ScrollArea className="w-full h-[50px] overflow-x-auto whitespace-nowrap py-2">
             <Viewport className="inline-flex">

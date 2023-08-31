@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function EducationalMenubar() {
   return (
-    <div className="relative bg-gray-200 p-4">
+    <div id= 'menubar' className="relative">
       {/* Menubar Section */}
       <div className="flex">
       <Menubar>
