@@ -4,8 +4,7 @@ import logging  # Import logging
 import requests
 import textrazor
 import openai
-import sys
-print(sys.executable)
+
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -16,7 +15,7 @@ API_HEADERS = {
 }
 razor_API_KEY_2 = "8b939ac6b5065faf71bc7c58eeb38c4fd7e813a1ad5b1251193a5837"
 
-openai.api_key = ""
+openai.api_key = "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"
 
 import time
 
@@ -66,17 +65,17 @@ def extract_topics(text):
     return topics
 
 @app.route('/expand_note', methods=['POST'])
-def expand_note(text):
+def expand_note():  # Removed 'text' parameter
     content = request.json
     if not content or 'note' not in content:
         abort(400, "Missing 'note' in request.")
 
-    original_note = content['text']
+    original_note = content['note']  # Corrected from 'text' to 'note'
     prompt = f"Expand the following note:\n{original_note}\n"
 
     try:
         response = openai.Completion.create(
-            model="text-davinci-003",   
+            model="text-davinci-003",
             prompt=prompt,
             max_tokens=100
         )
@@ -85,6 +84,7 @@ def expand_note(text):
     except Exception as e:
         logging.error(f"Failed to expand note: {e}")
         return jsonify({"error": "Failed to expand note"}), 500
+
 
 @app.route('/api/edify', methods=['POST'])
 def edify():

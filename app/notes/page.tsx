@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import 'quill/dist/quill.snow.css';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -35,23 +35,27 @@ export default function Page() {
     section2: '10vh'
   });
   const [editorHeight, setEditorHeight] = useState('70vh');
+  const quillRef = useRef<any>(null);
 
   useEffect(() => {
-
     setTopics([]);
+
     import('quill').then((QuillModule) => {
       const Quill = QuillModule.default;
       if (document.querySelector('#editor .ql-toolbar')) return;
+
       const options = {
         debug: 'info',
-        modules: { /* ... */ },
+        modules: { /* your modules here */ },
         placeholder: 'Compose an epic...',
         readOnly: false,
         theme: 'snow'
       };
-      const quill = new Quill('#editor', options);
-      quill.on('text-change', function () {
-        const text = quill.getText();
+
+      quillRef.current = new Quill('#editor', options);
+      
+      quillRef.current.on('text-change', function() {
+        const text = quillRef.current.getText();
         axios.post('http://localhost:8000/api/edify', { text }, {
           headers: { 'Content-Type': 'application/json' }
         })
@@ -67,18 +71,37 @@ export default function Page() {
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
+
     if (isExpanded) {
       setSectionHeights({
         section1: '80vh',
         section2: '10vh'
       });
-      setEditorHeight('70vh');  // Update Quill editor's height
+      setEditorHeight('70vh');
     } else {
       setSectionHeights({
         section1: '50vh',
         section2: '40vh'
       });
-      setEditorHeight('40vh');  // Update Quill editor's height
+      setEditorHeight('40vh');
+    }
+  };
+
+  const handleExpand = async () => {
+    if (!quillRef.current) {
+      return;
+    }
+
+    const text = quillRef.current.getText();
+    try {
+      const { data } = await axios.post('http://localhost:8000/expand_note', { note: text }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const expandedNote = data.expanded_note;
+      quillRef.current.insertText(quillRef.current.getLength(), `\n${expandedNote}`);
+    } catch (error) {
+      console.error('Failed to expand note:', error);
     }
   };
 
@@ -118,7 +141,7 @@ export default function Page() {
               </form>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button>Expand</Button>
+              <Button onClick={handleExpand}>Expand</Button>
             </CardFooter>
           </Card>
         </div>
