@@ -29,7 +29,7 @@ export default function Page() {
   const [references, setReferences] = useState<string[] | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [topics, setTopics] = useState<string[] | null>(null);
-  const [menubarHeight, setMenubarHeight] = useState(0);
+  const [menubarHeight, setMenubarHeight] = useState('5vh');
   const [sectionHeights, setSectionHeights] = useState({
     section1: '80vh',
     section2: '10vh'
@@ -37,10 +37,7 @@ export default function Page() {
   const [editorHeight, setEditorHeight] = useState('70vh');
 
   useEffect(() => {
-    const menubar = document.getElementById('menubar');
-    if (menubar) {
-      setMenubarHeight(menubar.offsetHeight);
-    }
+
     setTopics([]);
     import('quill').then((QuillModule) => {
       const Quill = QuillModule.default;
@@ -86,7 +83,7 @@ export default function Page() {
   };
 
   return (
-    <div className="h-screen flex flex-col" style={{ paddingTop: menubarHeight }}>
+    <div className="h-[95vh] flex flex-col" style={{ paddingTop: menubarHeight }}>
       {/* Section 1 */}
       <div className="flex-grow flex items-center justify-between" style={{ height: sectionHeights.section1 }}>
         <div className="flex w-full justify-center">
@@ -160,20 +157,15 @@ export default function Page() {
             <AccordionItem value="feature-2" className="w-[calc(33.33%-1rem)] rounded bg-white p-4 shadow m-2">
               <AccordionTrigger className="text-lg font-semibold">Reference Links</AccordionTrigger>
               <AccordionContent className="text-sm mt-4">
-                <ScrollArea className="w-full h-[200px] rounded overflow-hidden shadow-inner bg-white">
-                  <Viewport className="w-full rounded">
-                    <div className="py-2 px-4">
-                      {references?.map((reference, index) => (
-                        <div key={index} className="text-base mt-2 pt-2 border-t border-gray-300">
-                          <a href={reference} target="_blank" rel="noopener noreferrer">{reference}</a>
-                        </div>
-                      )) ?? 'No references available or incorrect format'}
-                    </div>
-                  </Viewport>
-                  <Scrollbar className="flex select-none touch-none p-0.5 bg-gray-400 transition-colors duration-200 ease-out hover:bg-gray-500">
-                    <Thumb className="flex-1 bg-gray-700 rounded-full" />
-                  </Scrollbar>
-                </ScrollArea>
+                <div className="w-full h-[200px] rounded overflow-auto shadow-inner bg-white">
+                  <div className="py-2 px-4">
+                    {references?.map((reference, index) => (
+                      <div key={index} className="text-base mt-2 pt-2 border-t border-gray-300">
+                        <a href={reference} target="_blank" rel="noopener noreferrer">{reference}</a>
+                      </div>
+                    )) ?? 'No references available or incorrect format'}
+                  </div>
+                </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="feature-3" className="w-[calc(33.33%-1rem)] rounded bg-white p-4 shadow m-2">
