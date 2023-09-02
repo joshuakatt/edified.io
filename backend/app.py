@@ -16,7 +16,7 @@ API_HEADERS = {
 }
 razor_API_KEY_2 = "8b939ac6b5065faf71bc7c58eeb38c4fd7e813a1ad5b1251193a5837"
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 import time
 
@@ -85,6 +85,18 @@ def expand_note():  # Removed 'text' parameter
     except Exception as e:
         logging.error(f"Failed to expand note: {e}")
         return jsonify({"error": "Failed to expand note"}), 500
+    
+#for liveness and readiness:
+@app.route('/health/live', methods=['GET'])
+def liveness():
+    return jsonify({"status": "OK", "message": "Application is live"}), 200
+
+
+@app.route('/health/ready', methods=['GET'])
+def readiness():
+    # Implement additional logic to check database, etc. here if needed
+    return jsonify({"status": "OK", "message": "Application is ready"}), 200
+
 
 
 @app.route('/api/edify', methods=['POST'])
