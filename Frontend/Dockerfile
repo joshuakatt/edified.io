@@ -1,5 +1,5 @@
 # Use an official Node runtime as a base image
-FROM --platform=linux/amd64 node:18
+FROM --platform=linux/amd64 node:18-alpine
 
 # Set the working directory in the container
 WORKDIR /app
@@ -19,3 +19,5 @@ RUN npm run build
 
 # Run the app when the container launches
 CMD ["npm", "start"]
+
+EXPOSE 3000
