@@ -61,7 +61,7 @@ export default function Page() {
   
         debounceTimer = setTimeout(() => { // Set a new timer
           const text = quillRef.current.getText();
-          axios.post('http://localhost:80/api/edify', { text }, {
+          axios.post('http://4.156.170.185/api/edify', { text }, {
             headers: { 'Content-Type': 'application/json' }
           })
           .then(({ data: { summary, references, topics } }) => {
@@ -100,7 +100,7 @@ export default function Page() {
 
     const text = quillRef.current.getText();
     try {
-      const { data } = await axios.post('http://localhost:80/expand_note', { note: text }, {
+      const { data } = await axios.post('http://4.156.170.185/expand_note', { note: text }, {
         headers: { 'Content-Type': 'application/json' }
       });
 

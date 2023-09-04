@@ -12,11 +12,11 @@ CORS(app)  # Enable CORS for all routes
 
 HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/Shobhank-iiitdwd/BERT_summary"
 API_HEADERS = {
-    "Authorization": "Bearer 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"
+    "Authorization": "api-key"
 }
-razor_API_KEY_2 = "8b939ac6b5065faf71bc7c58eeb38c4fd7e813a1ad5b1251193a5837"
+razor_API_KEY_2 = "api-key"
 
-openai.api_key = "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"
+openai.api_key = "api-key"
 
 import time
 
@@ -96,6 +96,11 @@ def liveness():
 def readiness():
     # Implement additional logic to check database, etc. here if needed
     return jsonify({"status": "OK", "message": "Application is ready"}), 200
+
+
+@app.route('/api/test')
+def test():
+    return("Hellow")
 
 
 

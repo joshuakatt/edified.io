@@ -15,3 +15,5 @@ EXPOSE 80
 
 # Defining environment variable
 ENV NAME World
+
+ENTRYPOINT ["python", "app.py"]
