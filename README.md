@@ -2,6 +2,7 @@
 ## Intelligent Note taking app
 
 A Generative AI application built on NextJS 13 with a Flask Python Backend, built completely by me. <br>
+Containerized with Docker. <br>
 Deployed on Azure Kubernetes Service. <br>
 
 View Sep 4 Deployment: (http://20.242.138.31/)
