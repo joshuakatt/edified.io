@@ -8,7 +8,7 @@ Deployed on Azure Kubernetes Service. <br>
 
 View Sep 4 Deployment: (http://20.242.138.31/)
 
-![Screenshot](images/screenshot.png)
+![Screenshot](images/Screenshot 2023-09-04 at 4.17.40 PM.png)
 
 - OpenAI's completion features/Generative AI
 - Bert's powerful summarization features.
