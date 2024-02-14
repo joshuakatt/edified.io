@@ -7,6 +7,7 @@ Containerized with Docker. <br>
 Deployed on Azure Kubernetes Service. <br>
 
 View Sep 4 Deployment: (http://20.242.138.31/)
+(Live link currently inactive since 2023-11-31)
 
 ![Screenshot](images/screenshot.png)
 
